@@ -67,3 +67,23 @@ with check ((select public.is_vl_body_lab_admin()));
 grant usage on schema public to anon, authenticated;
 grant select on public.brand_content_items to anon, authenticated;
 grant insert, update, delete on public.brand_content_items to authenticated;
+
+create table if not exists public.brand_media_assets (
+  id uuid primary key default gen_random_uuid(),
+  brand text not null default 'vl-body-lab',
+  target text not null,
+  image_url text not null,
+  alt_text text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique (brand, target)
+);
+
+drop trigger if exists brand_media_assets_set_updated_at on public.brand_media_assets;
+create trigger brand_media_assets_set_updated_at before update on public.brand_media_assets
+for each row execute function public.set_updated_at();
+alter table public.brand_media_assets enable row level security;
+create policy "Public can view VL image replacements" on public.brand_media_assets for select to anon, authenticated using (brand = 'vl-body-lab');
+create policy "VL admin manages image replacements" on public.brand_media_assets for all to authenticated using ((select public.is_vl_body_lab_admin())) with check ((select public.is_vl_body_lab_admin()));
+grant select on public.brand_media_assets to anon, authenticated;
+grant insert, update, delete on public.brand_media_assets to authenticated;
