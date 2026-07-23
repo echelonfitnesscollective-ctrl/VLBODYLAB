@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="VL Body Lab — faith-led fitness, elevated essentials, and the Princess Grit lifestyle.">
+  <title>VL Body Lab | Faith. Fitness. Lifestyle.</title>
+  <link rel="icon" type="image/png" href="your-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="cms-config.js" defer></script>
+  <script src="cms-feed.js" defer></script>
+  <style>
+    :root { --pink:#ffd1e3; --rose:#e182ad; --ink:#120d10; --paper:#fffafd; --muted:#6f5962; --line:rgba(18,13,16,.16); --display:'Syncopate', sans-serif; --body:'Montserrat', sans-serif; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font-family:var(--body); overflow-x:hidden; }
+    button, input, textarea { font:inherit; }
+    a { color:inherit; }
+    .skip-link { position:fixed; top:-60px; left:16px; z-index:9999; background:var(--ink); color:#fff; padding:12px 16px; }
+    .skip-link:focus { top:16px; }
+    .site-header { position:sticky; top:0; z-index:100; height:78px; display:flex; align-items:center; justify-content:space-between; padding:0 clamp(20px,5vw,72px); background:rgba(255,250,253,.92); border-bottom:1px solid var(--line); backdrop-filter:blur(16px); }
+    .wordmark { font:700 clamp(.92rem,2vw,1.16rem)/1 var(--display); letter-spacing:.12em; text-decoration:none; white-space:nowrap; }
+    .desktop-nav { display:flex; gap:clamp(15px,2vw,28px); align-items:center; }
+    .desktop-nav a, .nav-action { font-size:.67rem; font-weight:800; letter-spacing:.11em; text-decoration:none; }
+    .desktop-nav a:hover, .nav-action:hover { color:var(--rose); }
+    .header-tools { display:flex; align-items:center; gap:10px; }
+    .icon-button { border:1px solid var(--ink); background:transparent; color:var(--ink); width:39px; height:39px; display:grid; place-items:center; cursor:pointer; transition:.2s; }
+    .icon-button:hover { background:var(--ink); color:var(--paper); }
+    .cart-count { position:absolute; margin:0 0 25px 25px; border-radius:50%; min-width:17px; height:17px; display:grid; place-items:center; background:var(--rose); color:#fff; font-size:.58rem; font-weight:800; }
+    .menu-button { display:none; }
+    .hero { min-height:calc(100svh - 78px); position:relative; isolation:isolate; display:grid; place-items:center; padding:56px 24px; text-align:center; overflow:hidden; background:linear-gradient(130deg,rgba(255,250,253,.96),rgba(255,209,227,.82)),url('prod6-color1.jpg') center/cover; }
+    .hero::after { content:''; position:absolute; inset:0; z-index:-1; background:radial-gradient(circle at 15% 75%,rgba(255,255,255,.8),transparent 25%),radial-gradient(circle at 85% 20%,rgba(225,130,173,.18),transparent 27%); }
+    .eyebrow { margin:0 0 20px; color:var(--rose); font-size:.65rem; font-weight:800; letter-spacing:.19em; text-transform:uppercase; }
+    .hero-logo { width:min(430px,82vw); margin:0 auto 27px; filter:drop-shadow(0 8px 18px rgba(18,13,16,.12)); }
+    h1,h2,h3 { font-family:var(--display); text-transform:uppercase; }
+    h1 { max-width:780px; margin:0 auto; font-size:clamp(1.55rem,4.1vw,3.5rem); line-height:1.35; letter-spacing:.05em; }
+    h1 span { color:var(--rose); }
+    .hero-copy { max-width:540px; margin:20px auto 29px; font-size:clamp(.86rem,1.4vw,1rem); line-height:1.8; }
+    .button { display:inline-flex; align-items:center; justify-content:center; gap:10px; border:1px solid var(--ink); padding:14px 20px; background:var(--ink); color:#fff; font-size:.65rem; font-weight:800; letter-spacing:.14em; text-decoration:none; text-transform:uppercase; cursor:pointer; transition:transform .2s, background .2s, color .2s; }
+    .button:hover { transform:translateY(-3px); background:var(--rose); border-color:var(--rose); }
+    .button--light { background:transparent; color:var(--ink); }
+    .button--light:hover { color:#fff; background:var(--ink); border-color:var(--ink); }
+    section { padding:clamp(65px,9vw,120px) clamp(20px,7vw,110px); }
+    .section-heading { display:flex; align-items:center; gap:18px; margin-bottom:40px; }
+    .section-heading::after { content:''; height:1px; flex:1; background:var(--ink); opacity:.35; }
+    h2 { margin:0; font-size:clamp(1.12rem,2.6vw,2rem); letter-spacing:.11em; }
+    .story { display:grid; grid-template-columns:.8fr 1.2fr; gap:clamp(35px,8vw,115px); align-items:center; background:var(--ink); color:#fff; }
+    .story h2 { color:var(--pink); }
+    .story .section-heading::after { background:var(--pink); }
+    .story-text { font-size:clamp(1rem,1.6vw,1.2rem); line-height:1.9; }
+    .story-verse { border-left:3px solid var(--rose); padding:24px 0 24px 28px; color:var(--pink); font-size:.85rem; line-height:1.85; font-style:italic; }
+    .story-verse cite { display:block; margin-top:14px; color:#fff; font-size:.63rem; letter-spacing:.14em; font-style:normal; font-weight:800; text-transform:uppercase; }
+    .lab-grid { display:grid; grid-template-columns:repeat(4,1fr); border:1px solid var(--ink); }
+    .lab-card { min-height:300px; display:flex; flex-direction:column; justify-content:flex-end; padding:26px; border-right:1px solid var(--ink); background:var(--paper); text-decoration:none; transition:background .25s,color .25s,transform .25s; }
+    .lab-card:last-child { border-right:0; }
+    .lab-card:hover { background:var(--pink); transform:translateY(-7px); }
+    .lab-number { color:var(--rose); margin-bottom:auto; font:700 .6rem var(--display); letter-spacing:.15em; }
+    .lab-icon { font-size:1.45rem; margin-bottom:28px; }
+    .lab-card h3 { margin:0 0 12px; font-size:.82rem; letter-spacing:.1em; }
+    .lab-card p { margin:0; color:var(--muted); font-size:.79rem; line-height:1.7; }
+    .lab-card .arrow { margin-top:20px; font-size:.72rem; font-weight:800; }
+    .shop { background:linear-gradient(180deg,#fffafd 0%,#fce7ef 100%); }
+    .shop-intro { max-width:620px; margin:-17px 0 38px; color:var(--muted); font-size:.9rem; line-height:1.75; }
+    .product-controls { display:flex; justify-content:flex-end; gap:9px; margin:-63px 0 27px; }
+    .product-grid { display:flex; gap:18px; overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth; padding:3px 3px 18px; scrollbar-width:none; }
+    .product-grid::-webkit-scrollbar { display:none; }
+    .product { flex:0 0 clamp(245px,25vw,310px); scroll-snap-align:start; min-width:0; background:#fff; border:1px solid var(--ink); display:flex; flex-direction:column; }
+    .product-image { aspect-ratio:4/5; overflow:hidden; background:#f6e5ec; }
+    .product-image img { width:100%; height:100%; object-fit:cover; transition:transform .35s; }
+    .product:hover .product-image img { transform:scale(1.04); }
+    .product-body { display:grid; grid-template-columns:1fr auto; gap:10px; align-items:start; padding:18px; }
+    .product-name { margin:0 0 6px; font:700 .63rem/1.55 var(--display); letter-spacing:.08em; }
+    .product-price { margin:0; font-size:.78rem; font-weight:700; }
+    .product-options { display:flex; flex-wrap:wrap; gap:7px; margin-top:13px; }
+    .color-option { min-width:25px; height:25px; border:1px solid var(--ink); border-radius:50%; background:var(--option-color); cursor:pointer; box-shadow:inset 0 0 0 3px #fff; }
+    .color-option[aria-pressed="true"] { outline:2px solid var(--rose); outline-offset:2px; }
+    .add-button { width:35px; height:35px; border:1px solid var(--ink); background:transparent; cursor:pointer; font-size:1rem; transition:.2s; }
+    .add-button:hover { background:var(--ink); color:#fff; }
+    .essentials { background:var(--ink); color:#fff; }
+    .essentials h2 { color:var(--pink); }
+    .essentials .section-heading::after { background:var(--pink); }
+    .affiliate-note { max-width:700px; margin:-17px 0 36px; color:#e7d9df; font-size:.78rem; line-height:1.75; }
+    .affiliate-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+    .affiliate-card { display:flex; flex-direction:column; min-height:230px; padding:25px; border:1px solid rgba(255,255,255,.45); background:rgba(255,255,255,.05); }
+    .affiliate-card i { color:var(--pink); font-size:1.25rem; margin-bottom:28px; }
+    .affiliate-card h3 { margin:0 0 12px; font-size:.75rem; line-height:1.5; }
+    .affiliate-card p { margin:0; color:#e7d9df; font-size:.78rem; line-height:1.7; }
+    .affiliate-card a { margin-top:auto; padding-top:22px; color:var(--pink); font-size:.64rem; font-weight:800; letter-spacing:.12em; text-decoration:none; text-transform:uppercase; }
+    .etsy-drops { background:linear-gradient(180deg,#f6e5ec,#fffafd); }
+    .etsy-intro { max-width:680px; margin:-17px 0 36px; color:var(--muted); font-size:.85rem; line-height:1.75; }
+    .etsy-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+    .etsy-item { display:flex; flex-direction:column; border:1px solid var(--ink); background:#fff; }
+    .etsy-item img { width:100%; aspect-ratio:1/1; object-fit:cover; background:#f5f5f5; }
+    .etsy-item-body { padding:18px; }
+    .etsy-item h3 { margin:0 0 8px; font-size:.72rem; line-height:1.55; }
+    .etsy-item p { margin:0; color:var(--muted); font-size:.75rem; line-height:1.65; }
+    .etsy-item a { display:inline-block; margin-top:16px; font-size:.62rem; font-weight:800; letter-spacing:.11em; text-decoration:none; text-transform:uppercase; }
+    .creator { display:grid; grid-template-columns:.85fr 1.15fr; gap:clamp(35px,7vw,90px); align-items:center; background:#f5e5ec; }
+    .creator-copy p { max-width:450px; line-height:1.8; }
+    .creator-actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:25px; }
+    .creator-cards { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+    .creator-card { min-height:235px; display:flex; align-items:flex-end; padding:18px; background:#222 center/cover; color:#fff; text-decoration:none; position:relative; overflow:hidden; }
+    .creator-card::before { content:''; position:absolute; inset:0; background:linear-gradient(180deg,transparent,rgba(0,0,0,.82)); }
+    .creator-card span { position:relative; font:700 .58rem/1.65 var(--display); letter-spacing:.08em; }
+    .creator-card--train { background-image:url('t1.jpg'); }.creator-card--lifestyle { background-image:url('i1.jpg'); }.creator-card--collab { background-image:url('prod6-color1.jpg'); }
+    .travel { background:var(--ink); color:#fff; }
+    .travel .section-heading h2 { color:var(--pink); }.travel .section-heading::after { background:var(--pink); }
+    .travel-layout { display:grid; grid-template-columns:.75fr 1.25fr; gap:clamp(30px,6vw,75px); align-items:center; }
+    .travel-feature { min-height:420px; padding:30px; display:flex; align-items:flex-end; position:relative; overflow:hidden; background:url('your-photo.jpg') center/cover; }
+    .travel-feature::before { content:''; position:absolute; inset:0; background:linear-gradient(180deg,transparent 30%,rgba(0,0,0,.82)); }
+    .travel-feature div { position:relative; }.travel-feature h3 { margin:0 0 9px; font-size:1rem; letter-spacing:.09em; }.travel-feature p { margin:0; font-size:.8rem; line-height:1.7; color:#f4e9ee; }
+    .travel-copy > p { max-width:530px; color:#f4e9ee; line-height:1.9; }
+    .travel-tags { display:flex; flex-wrap:wrap; gap:9px; margin-top:24px; }.travel-tags span { border:1px solid rgba(255,255,255,.55); padding:9px 11px; font-size:.6rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; }
+    .social { padding-top:0; }
+    .social-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+    .social-card { min-height:280px; position:relative; display:flex; align-items:flex-end; padding:22px; overflow:hidden; background:#222 center/cover; color:#fff; text-decoration:none; }
+    .social-card::before { content:''; position:absolute; inset:0; background:linear-gradient(180deg,transparent 25%,rgba(0,0,0,.8)); transition:.25s; }
+    .social-card:hover::before { background:linear-gradient(180deg,rgba(225,130,173,.18),rgba(18,13,16,.86)); }
+    .social-card span { position:relative; display:flex; align-items:center; gap:10px; font:700 .68rem var(--display); letter-spacing:.1em; }
+    .social-card--tiktok { background-image:url('t1.jpg'); }
+    .social-card--instagram { background-image:url('i1.jpg'); }
+    .social-card--youtube { background-image:url('y1.jpg'); }
+    .contact { display:grid; grid-template-columns:1fr 1fr; gap:clamp(35px,8vw,110px); background:var(--pink); }
+    .contact-copy { align-self:start; }
+    .contact-copy p { max-width:420px; line-height:1.8; }
+    .contact-details { margin-top:34px; display:grid; gap:10px; font-size:.79rem; font-weight:700; }
+    .contact-form { display:grid; gap:16px; }
+    .contact-form label { display:grid; gap:8px; font-size:.62rem; font-weight:800; letter-spacing:.12em; }
+    .contact-form input,.contact-form textarea,.contact-form select { width:100%; padding:13px; border:1px solid var(--ink); border-radius:0; background:rgba(255,255,255,.62); color:var(--ink); outline:none; }
+    .contact-form input:focus,.contact-form textarea:focus,.contact-form select:focus { border-color:var(--rose); box-shadow:0 0 0 3px rgba(225,130,173,.25); }
+    .form-status { min-height:18px; margin:0; font-size:.75rem; font-weight:700; }
+    .site-footer { padding:clamp(50px,7vw,85px) clamp(20px,7vw,110px) 24px; background:var(--ink); color:#fff; }
+    .footer-grid { display:grid; grid-template-columns:1.25fr repeat(3,.8fr); gap:35px; max-width:1440px; margin:auto; padding-bottom:42px; }
+    .footer-brand { max-width:300px; }.footer-wordmark { display:inline-block; margin-bottom:18px; color:var(--pink); font:700 1rem var(--display); letter-spacing:.12em; text-decoration:none; }.footer-brand p { margin:0; color:#cbbec4; font-size:.76rem; line-height:1.8; }
+    .footer-heading { margin:0 0 17px; color:var(--pink); font:700 .61rem var(--display); letter-spacing:.12em; text-transform:uppercase; }.footer-list { display:grid; gap:11px; }.footer-list a,.footer-list button { width:max-content; max-width:100%; padding:0; border:0; background:transparent; color:#e9e1e5; font:600 .69rem var(--body); line-height:1.4; text-align:left; text-decoration:none; cursor:pointer; }.footer-list a:hover,.footer-list button:hover { color:var(--rose); }
+    .footer-credit { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:20px; padding-top:23px; border-top:1px solid rgba(255,255,255,.18); }.footer-credit p { margin:0; color:#a8969f; font-size:.55rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }.intent-credit { display:inline-flex; align-items:center; gap:10px; color:#fff; font-size:.57rem; font-weight:700; letter-spacing:.12em; text-decoration:none; text-transform:uppercase; }.intent-credit img { width:24px; height:24px; object-fit:contain; filter:brightness(0) invert(1); }.intent-credit:hover { color:var(--pink); }
+    .policy-dialog { width:min(620px,calc(100% - 32px)); border:1px solid var(--ink); padding:0; background:var(--paper); color:var(--ink); box-shadow:0 24px 80px rgba(0,0,0,.35); }.policy-dialog::backdrop { background:rgba(18,13,16,.72); }.policy-content { padding:clamp(24px,5vw,46px); }.policy-content h2 { margin:0 0 20px; font-size:1.2rem; }.policy-content p { font-size:.82rem; line-height:1.8; }.policy-content .icon-button { float:right; margin:-5px -5px 15px 15px; }
+    .cms-update-feed { display:grid; gap:12px; margin:0 0 28px; }.cms-update-card { display:grid; grid-template-columns:auto minmax(0,1fr); gap:18px; align-items:center; max-width:1100px; padding:20px; border:1px solid var(--ink); background:var(--paper); box-shadow:6px 6px 0 var(--pink); }.cms-update-card img { width:88px; height:74px; object-fit:cover; }.cms-update-card h3 { margin:4px 0 8px; font-size:.83rem; line-height:1.5; }.cms-update-card p { margin:0; color:var(--muted); font-size:.78rem; line-height:1.6; }.cms-update-eyebrow { color:var(--rose); font-size:.58rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; }.cms-update-action { display:inline-block; margin-top:12px; font-size:.6rem; font-weight:800; letter-spacing:.12em; text-decoration:none; text-transform:uppercase; }.essentials .cms-update-card,.travel .cms-update-card { background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.5); box-shadow:none; }.essentials .cms-update-card h3,.travel .cms-update-card h3,.essentials .cms-update-card p,.travel .cms-update-card p { color:#fff; }.essentials .cms-update-card p,.travel .cms-update-card p { color:#eee2e7; }.essentials .cms-update-action,.travel .cms-update-action { color:var(--pink); }
+    .mobile-menu,.drawer-backdrop,.cart-drawer { position:fixed; inset:0; z-index:200; }
+    .mobile-menu { display:none; padding:112px 30px 30px; background:var(--ink); color:#fff; transform:translateX(100%); transition:transform .32s ease; }
+    .mobile-menu.open { transform:translateX(0); }
+    .mobile-menu nav { display:grid; gap:26px; }
+    .mobile-menu a { font:700 clamp(1.25rem,7vw,2rem) var(--display); letter-spacing:.1em; text-decoration:none; }
+    .mobile-menu .menu-close { position:absolute; right:20px; top:20px; color:#fff; border-color:#fff; }
+    .drawer-backdrop { display:none; background:rgba(18,13,16,.55); opacity:0; transition:opacity .25s; }
+    .drawer-backdrop.open { display:block; opacity:1; }
+    .cart-drawer { left:auto; width:min(420px,100%); padding:25px; display:flex; flex-direction:column; background:var(--paper); border-left:1px solid var(--ink); transform:translateX(100%); transition:transform .28s ease; }
+    .cart-drawer.open { transform:translateX(0); }
+    .drawer-head { display:flex; align-items:center; justify-content:space-between; padding-bottom:18px; border-bottom:1px solid var(--line); }
+    .drawer-head h2 { font-size:1rem; }
+    .cart-items { display:grid; gap:14px; overflow:auto; padding:20px 0; }
+    .cart-item { display:grid; grid-template-columns:1fr auto; gap:10px; padding-bottom:14px; border-bottom:1px solid var(--line); font-size:.78rem; }
+    .cart-item strong { display:block; margin-bottom:5px; font-size:.72rem; }
+    .remove-item { border:0; background:transparent; color:var(--muted); font-size:.7rem; cursor:pointer; text-decoration:underline; }
+    .empty-state { color:var(--muted); font-size:.84rem; line-height:1.7; }
+    .cart-bottom { margin-top:auto; padding-top:18px; border-top:1px solid var(--line); }
+    .cart-total { display:flex; justify-content:space-between; margin-bottom:17px; font-weight:800; font-size:.84rem; }
+    .cart-note { margin:13px 0 0; color:var(--muted); font-size:.67rem; line-height:1.6; }
+    @media (max-width:1000px) { .lab-grid { grid-template-columns:repeat(2,1fr); } .affiliate-grid,.etsy-grid { grid-template-columns:1fr 1fr; } .lab-card:nth-child(2) { border-right:0; } .lab-card:nth-child(-n+2) { border-bottom:1px solid var(--ink); } }
+    @media (max-width:760px) { .site-header { height:66px; } .desktop-nav,.header-tools .cart-toggle { display:none; } .menu-button { display:grid; } .hero { min-height:calc(100svh - 66px); } .story,.contact,.creator,.travel-layout { grid-template-columns:1fr; } .social-grid { grid-template-columns:1fr; } .social-card { min-height:210px; } .footer-grid { grid-template-columns:1fr 1fr; } .mobile-menu { display:block; } }
+    @media (max-width:520px) { section { padding:58px 20px; } .product-controls { margin:-18px 0 20px; } .product { flex-basis:78vw; } .affiliate-grid,.creator-cards,.etsy-grid,.footer-grid { grid-template-columns:1fr; } .cms-update-card { grid-template-columns:1fr; }.cms-update-card img { width:100%; height:180px; } .product-body { padding:13px; } .add-button { width:31px; height:31px; } .lab-grid { grid-template-columns:1fr; } .lab-card,.lab-card:nth-child(2) { min-height:230px; border-right:0; border-bottom:1px solid var(--ink); } .lab-card:last-child { border-bottom:0; } .hero-copy { font-size:.82rem; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <a class="wordmark" href="#top" aria-label="VL Body Lab home">VL BODY LAB</a>
+    <nav class="desktop-nav" aria-label="Main navigation">
+      <a href="#story">About</a><a href="#lab">The Lab</a><a href="#shop">Collective</a><a href="#etsy-drops">Etsy Drops</a><a href="#essentials">Essentials</a><a href="#creator">Creator</a><a href="#travel">Travel</a><a href="#contact">Inquire</a>
+    </nav>
+    <div class="header-tools">
+      <button class="icon-button cart-toggle" type="button" aria-label="Open shopping bag"><i class="fa-solid fa-bag-shopping"></i><span class="cart-count" hidden>0</span></button>
+      <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false"><i class="fa-solid fa-bars"></i></button>
+    </div>
+  </header>
+  <main id="main">
+    <section class="hero" id="top">
+      <div>
+        <p class="eyebrow">Faith-led fitness · elevated living</p>
+        <img class="hero-logo" src="VL-Logo.png" alt="VL Body Lab">
+        <h1>Pretty in purpose.<br><span>Strong by design.</span></h1>
+        <p class="hero-copy">Training, fuel, and everyday essentials for the woman building her glow and her grit at the same time.</p>
+        <a class="button" href="#lab">Enter the lab <i class="fa-solid fa-arrow-down"></i></a>
+      </div>
+    </section>
+    <section class="story" id="story">
+      <div class="section-heading"><h2>The story</h2></div>
+      <div><p class="story-text">VL Body Lab is where high-maintenance aesthetics meet high-performance training. Coach Niiy created this collective for women who refuse to choose between feeling beautiful and becoming powerful.</p><blockquote class="story-verse">“Trust in the Lord with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.”<cite>Proverbs 3:5–6</cite></blockquote></div>
+    </section>
+    <section id="lab">
+      <div class="section-heading"><h2>The Lab</h2></div>
+      <div class="lab-grid">
+        <a class="lab-card" href="grit.html"><span class="lab-number">01 / TRAIN</span><i class="lab-icon fa-solid fa-dumbbell"></i><h3>Grit</h3><p>Performance blueprints and training manuals built for purposeful progress.</p><span class="arrow">Enter the gym →</span></a>
+        <a class="lab-card" href="kitchen.html"><span class="lab-number">02 / FUEL</span><i class="lab-icon fa-solid fa-utensils"></i><h3>In the kitchen</h3><p>Lab-to-table meals to fuel your training and your everyday glow.</p><span class="arrow">View recipes →</span></a>
+        <a class="lab-card" href="smoothies.html"><span class="lab-number">03 / RECOVER</span><i class="lab-icon fa-solid fa-blender"></i><h3>Smoothie bar</h3><p>High-protein blends for recovery, energy, and the in-between.</p><span class="arrow">Browse menu →</span></a>
+        <a class="lab-card" href="snacks.html"><span class="lab-number">04 / SNACK</span><i class="lab-icon fa-solid fa-apple-whole"></i><h3>Protein snacks</h3><p>Quick, beautiful fuel for a full schedule and big goals.</p><span class="arrow">See snacks →</span></a>
+      </div>
+    </section>
+    <section class="shop" id="shop">
+      <div class="section-heading"><h2>VL Collective</h2></div>
+      <p class="shop-intro">A soft-power uniform for the work in and out of the gym. Pick your color, add pieces to your bag, and send your order request when you’re ready.</p>
+      <div class="product-controls" aria-label="Collection carousel controls"><button class="icon-button" type="button" data-carousel="collective-track" data-direction="-1" aria-label="Previous collection items"><i class="fa-solid fa-arrow-left"></i></button><button class="icon-button" type="button" data-carousel="collective-track" data-direction="1" aria-label="Next collection items"><i class="fa-solid fa-arrow-right"></i></button></div>
+      <div class="product-grid" id="collective-track" aria-label="VL Collective carousel">
+        <article class="product" data-product-card><div class="product-image"><img src="pinkvluxezipup1.jpg" alt="Pink VL Body Lab zip-up"></div><div class="product-body"><div><h3 class="product-name">Princess Zip-Up</h3><p class="product-price">$65.00</p><div class="product-options" aria-label="Princess Zip-Up colors"><button class="color-option" type="button" style="--option-color:#f2aec3" data-image="pinkvluxezipup1.jpg" data-color="Pink" aria-label="Pink" aria-pressed="true"></button><button class="color-option" type="button" style="--option-color:#171719" data-image="vluxezipup.jpg" data-color="Black / White" aria-label="Black and white" aria-pressed="false"></button></div></div><button class="add-button" type="button" data-product="Princess Zip-Up" data-price="65" aria-label="Add Princess Zip-Up to bag">+</button></div></article>
+        <article class="product" data-product-card><div class="product-image"><img src="pinkvluxelegging1.jpg" alt="Pink VL Body Lab leggings"></div><div class="product-body"><div><h3 class="product-name">Sculpt Leggings</h3><p class="product-price">$55.00</p><div class="product-options" aria-label="Sculpt Leggings colors"><button class="color-option" type="button" style="--option-color:#f2aec3" data-image="pinkvluxelegging1.jpg" data-color="Pink" aria-label="Pink" aria-pressed="true"></button><button class="color-option" type="button" style="--option-color:#171719" data-image="vluxelegging1.jpg" data-color="Black" aria-label="Black" aria-pressed="false"></button></div></div><button class="add-button" type="button" data-product="Sculpt Leggings" data-price="55" aria-label="Add Sculpt Leggings to bag">+</button></div></article>
+        <article class="product" data-product-card><div class="product-image"><img src="pinkvluxesportsbra1.jpg" alt="Pink VL Body Lab sports bra"></div><div class="product-body"><div><h3 class="product-name">VL Sports Bra</h3><p class="product-price">$38.00</p><div class="product-options" aria-label="VL Sports Bra colors"><button class="color-option" type="button" style="--option-color:#f2aec3" data-image="pinkvluxesportsbra1.jpg" data-color="Pink" aria-label="Pink" aria-pressed="true"></button><button class="color-option" type="button" style="--option-color:#171719" data-image="vluxsportsbra1.jpg" data-color="Black" aria-label="Black" aria-pressed="false"></button><button class="color-option" type="button" style="--option-color:#fff" data-image="bra-white.png" data-color="White" aria-label="White" aria-pressed="false"></button></div></div><button class="add-button" type="button" data-product="VL Sports Bra" data-price="38" aria-label="Add VL Sports Bra to bag">+</button></div></article>
+        <article class="product" data-product-card><div class="product-image"><img src="hat-pink.png" alt="Pink VL Body Lab hat"></div><div class="product-body"><div><h3 class="product-name">VL Trucker Hat</h3><p class="product-price">$30.00</p><div class="product-options" aria-label="VL Trucker Hat colors"><button class="color-option" type="button" style="--option-color:#f2aec3" data-image="hat-pink.png" data-color="Pink" aria-label="Pink" aria-pressed="true"></button><button class="color-option" type="button" style="--option-color:#fff" data-image="hat-white.png" data-color="White" aria-label="White" aria-pressed="false"></button></div></div><button class="add-button" type="button" data-product="VL Trucker Hat" data-price="30" aria-label="Add VL Trucker Hat to bag">+</button></div></article>
+        <article class="product" data-product-card><div class="product-image"><img src="pinkauratop1.jpg" alt="Pink VL Body Lab Aura crop tee"></div><div class="product-body"><div><h3 class="product-name">Aura Crop Tee</h3><p class="product-price">$35.00</p><div class="product-options" aria-label="Aura Crop Tee colors"><button class="color-option" type="button" style="--option-color:#f2aec3" data-image="pinkauratop1.jpg" data-color="Pink" aria-label="Pink" aria-pressed="true"></button><button class="color-option" type="button" style="--option-color:#171719" data-image="midnightauratop1.jpg" data-color="Midnight" aria-label="Midnight" aria-pressed="false"></button></div></div><button class="add-button" type="button" data-product="Aura Crop Tee" data-price="35" aria-label="Add Aura Crop Tee to bag">+</button></div></article>
+        <article class="product" data-product-card><div class="product-image"><img src="pinkaurabottom1.jpg" alt="Pink VL Body Lab Aura leggings"></div><div class="product-body"><div><h3 class="product-name">Aura Leggings</h3><p class="product-price">$55.00</p><div class="product-options" aria-label="Aura Leggings colors"><button class="color-option" type="button" style="--option-color:#f2aec3" data-image="pinkaurabottom1.jpg" data-color="Pink" aria-label="Pink" aria-pressed="true"></button><button class="color-option" type="button" style="--option-color:#171719" data-image="midnightaurabottom1.jpg" data-color="Midnight" aria-label="Midnight" aria-pressed="false"></button></div></div><button class="add-button" type="button" data-product="Aura Leggings" data-price="55" aria-label="Add Aura Leggings to bag">+</button></div></article>
+        <article class="product" data-product-card><div class="product-image"><img src="hoodie1-pink.jpg" alt="Pink VL Body Lab hoodie"></div><div class="product-body"><div><h3 class="product-name">Rockstar Hoodie</h3><p class="product-price">$65.00</p><div class="product-options" aria-label="Rockstar Hoodie colors"><button class="color-option" type="button" style="--option-color:#f2aec3" data-image="hoodie1-pink.jpg" data-color="Pink" aria-label="Pink" aria-pressed="true"></button><button class="color-option" type="button" style="--option-color:#171719" data-image="hoodie1-black.jpg" data-color="Black" aria-label="Black" aria-pressed="false"></button></div></div><button class="add-button" type="button" data-product="Rockstar Hoodie" data-price="65" aria-label="Add Rockstar Hoodie to bag">+</button></div></article>
+      </div>
+    </section>
+    <section class="etsy-drops" id="etsy-drops">
+      <div class="section-heading"><h2>Etsy drops</h2></div>
+      <p class="etsy-intro">The extras that make the VL lifestyle feel complete—made-to-order accessories and creator merch designed for your gym bag, commute, and everyday reset.</p>
+      <div class="etsy-grid"><article class="etsy-item"><img src="etsy1-1.jpg" alt="Black VL Body Lab phone case"><div class="etsy-item-body"><h3>VL phone case</h3><p>Glossy, protective, and marked with the VL signature.</p><a href="#contact">Request the Etsy link →</a></div></article><article class="etsy-item"><img src="etsy3-1.jpg" alt="Black VL Body Lab card holder"><div class="etsy-item-body"><h3>VL card holder</h3><p>A refined carry piece for post-gym errands and everyday essentials.</p><a href="#contact">Request the Etsy link →</a></div></article><article class="etsy-item"><img src="etsy4-1.jpg" alt="Black VL Body Lab headphones"><div class="etsy-item-body"><h3>VL headphones</h3><p>Creator mode, commute mode, locked-in workout mode.</p><a href="#contact">Request the Etsy link →</a></div></article></div>
+    </section>
+    <section class="essentials" id="essentials">
+      <div class="section-heading"><h2>The Essentials</h2></div>
+      <p class="affiliate-note">Niiy’s current gym and lifestyle favorites. Some links may be affiliate links, which means VL Body Lab may earn a commission at no added cost to you.</p>
+      <div class="affiliate-grid"><article class="affiliate-card"><i class="fa-solid fa-bolt"></i><h3>Pre-workout edit</h3><p>High-energy picks for early lifts, long days, and locked-in Rockstar sessions.</p><a href="https://www.tiktok.com/@vloneniiy" target="_blank" rel="noopener">Shop her TikTok →</a></article><article class="affiliate-card"><i class="fa-solid fa-dumbbell"></i><h3>Gym bag non-negotiables</h3><p>Hydration, straps, bands, and all the little things that make training smoother.</p><a href="https://www.instagram.com/vloneniiy?igsh=MWR2ZzR5MzZhbmNlOA==" target="_blank" rel="noopener">See the edit →</a></article><article class="affiliate-card"><i class="fa-solid fa-heart"></i><h3>Glow &amp; recovery</h3><p>Post-workout recovery and lifestyle favorites that keep the Princess energy intact.</p><a href="https://www.tiktok.com/@vloneniiy" target="_blank" rel="noopener">Get the links →</a></article></div>
+    </section>
+    <section class="creator" id="creator"><div class="creator-copy"><div class="section-heading"><h2>Creator mode</h2></div><p>Training clips, gym fits, faith-led routines, and the real work behind the glow. Follow the VL journey or bring your brand into the story.</p><div class="creator-actions"><a class="button" href="https://www.tiktok.com/@vloneniiy" target="_blank" rel="noopener">Watch on TikTok <i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="button button--light" href="mailto:collab@vlbodylab.com?subject=VL%20Body%20Lab%20brand%20collaboration">Work with Niiy</a></div></div><div class="creator-cards"><a class="creator-card creator-card--train" href="https://www.tiktok.com/@vloneniiy" target="_blank" rel="noopener"><span>Training<br>content</span></a><a class="creator-card creator-card--lifestyle" href="https://www.instagram.com/vloneniiy?igsh=MWR2ZzR5MzZhbmNlOA==" target="_blank" rel="noopener"><span>Gym fits &amp;<br>lifestyle</span></a><a class="creator-card creator-card--collab" href="mailto:collab@vlbodylab.com?subject=VL%20Body%20Lab%20brand%20collaboration"><span>Brand<br>collaborations</span></a></div></section>
+    <section class="travel" id="travel"><div class="section-heading"><h2>Travel &amp; lifestyle</h2></div><div class="travel-layout"><article class="travel-feature"><div><h3>Outside the gym</h3><p>Soft-life style, travel days, and the moments that make the work worth it.</p></div></article><div class="travel-copy"><p>VL is about more than the workout. Follow Niiy for packed-gym-to-airport routines, travel style, elevated self-care, and the behind-the-scenes of building a life you’re proud of.</p><div class="travel-tags"><span>Travel diaries</span><span>Airport fits</span><span>Wellness routines</span><span>Creator behind-the-scenes</span></div><div class="creator-actions"><a class="button" href="https://www.instagram.com/vloneniiy?igsh=MWR2ZzR5MzZhbmNlOA==" target="_blank" rel="noopener">Follow the journey <i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="button button--light" href="mailto:collab@vlbodylab.com?subject=VL%20Body%20Lab%20travel%20or%20lifestyle%20collaboration">Travel &amp; lifestyle collabs</a></div></div></div></section>
+    <section class="social" aria-label="Follow VL Body Lab">
+      <div class="section-heading"><h2>Tap in</h2></div>
+      <div class="social-grid">
+        <a class="social-card social-card--tiktok" href="https://www.tiktok.com/@vloneniiy" target="_blank" rel="noopener"><span><i class="fa-brands fa-tiktok"></i> @vloneniiy</span></a>
+        <a class="social-card social-card--instagram" href="https://www.instagram.com/vloneniiy?igsh=MWR2ZzR5MzZhbmNlOA==" target="_blank" rel="noopener"><span><i class="fa-brands fa-instagram"></i> @vloneniiy</span></a>
+        <a class="social-card social-card--youtube" href="#contact"><span><i class="fa-brands fa-youtube"></i> Join the channel</span></a>
+      </div>
+    </section>
+    <section class="contact" id="contact">
+      <div class="contact-copy"><div class="section-heading"><h2>Let's connect</h2></div><p>Coaching questions, merch inquiries, affiliate opportunities, or a brand partnership—send the details and we’ll get back to you.</p><div class="contact-details"><a href="mailto:collab@vlbodylab.com">collab@vlbodylab.com</a><span>Apopka / Orlando, FL</span></div></div>
+      <form class="contact-form" id="contact-form"><label>Name<input name="name" autocomplete="name" required></label><label>Email<input name="email" type="email" autocomplete="email" required></label><label>I'm reaching out about<select name="inquiry-type"><option>Brand collaboration</option><option>Affiliate opportunity</option><option>Merch or Etsy drop</option><option>Coaching</option><option>General inquiry</option></select></label><label>Message<textarea name="message" rows="5" required></textarea></label><button class="button" type="submit">Send inquiry <i class="fa-solid fa-arrow-up-right-from-square"></i></button><p class="form-status" aria-live="polite"></p></form>
+    </section>
+  </main>
+  <footer class="site-footer"><div class="footer-grid"><div class="footer-brand"><a class="footer-wordmark" href="#top">VL BODY LAB</a><p>Faith-led fitness, elevated lifestyle, and content made for women building a life they love.</p></div><div><h3 class="footer-heading">Explore</h3><nav class="footer-list" aria-label="Footer navigation"><a href="#shop">The Collective</a><a href="#etsy-drops">Etsy Drops</a><a href="#essentials">The Essentials</a><a href="#travel">Travel &amp; Lifestyle</a></nav></div><div><h3 class="footer-heading">Connect</h3><nav class="footer-list" aria-label="Social navigation"><a href="https://www.tiktok.com/@vloneniiy" target="_blank" rel="noopener">TikTok</a><a href="https://www.instagram.com/vloneniiy?igsh=MWR2ZzR5MzZhbmNlOA==" target="_blank" rel="noopener">Instagram</a><a href="mailto:collab@vlbodylab.com">Brand collaborations</a><a href="#contact">Contact</a></nav></div><div><h3 class="footer-heading">Legal &amp; Admin</h3><div class="footer-list"><button type="button" data-policy="privacy">Privacy policy</button><button type="button" data-policy="terms">Terms of use</button><button type="button" data-policy="affiliate">Affiliate disclosure</button><button type="button" data-policy="disclaimer">Fitness disclaimer</button><a href="admin.html">Admin sign in</a></div></div></div><div class="footer-credit"><p>© 2026 VL Body Lab · Faith. Fitness. Lifestyle.</p><a class="intent-credit" href="https://intentrev.net" target="_blank" rel="noopener"><span>Designed with Intent</span><img src="intent-logo-i1.svg" alt="Intent Revenue"></a></div></footer>
+  <dialog class="policy-dialog" id="policy-dialog"><div class="policy-content"><button class="icon-button" type="button" data-close-policy aria-label="Close policy"><i class="fa-solid fa-xmark"></i></button><div id="policy-body"></div></div></dialog>
+  <div class="mobile-menu" aria-hidden="true"><button class="icon-button menu-close" type="button" aria-label="Close menu"><i class="fa-solid fa-xmark"></i></button><nav aria-label="Mobile navigation"><a href="#story">About</a><a href="#lab">The Lab</a><a href="#shop">Collective</a><a href="#etsy-drops">Etsy Drops</a><a href="#essentials">Essentials</a><a href="#creator">Creator</a><a href="#travel">Travel</a><a href="#contact">Inquire</a><button class="button button--light cart-toggle" type="button">Open bag <span class="mobile-cart-count">(0)</span></button></nav></div>
+  <div class="drawer-backdrop"></div>
+  <aside class="cart-drawer" aria-label="Shopping bag" aria-hidden="true"><div class="drawer-head"><h2>Your bag</h2><button class="icon-button close-cart" type="button" aria-label="Close shopping bag"><i class="fa-solid fa-xmark"></i></button></div><div class="cart-items"></div><div class="cart-bottom"><div class="cart-total"><span>Estimated total</span><span class="cart-total-value">$0.00</span></div><button class="button checkout-button" type="button">Request your order</button><p class="cart-note">We’ll open an email with your bag details so the VL team can confirm availability, size, and payment.</p></div></aside>
+  <script>
+    const menu=document.querySelector('.mobile-menu'), menuButton=document.querySelector('.menu-button'), cartDrawer=document.querySelector('.cart-drawer'), backdrop=document.querySelector('.drawer-backdrop');
+    let cart=[]; try { cart=JSON.parse(localStorage.getItem('vl-body-lab-cart'))||[]; } catch(e) {}
+    const currency=value=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(value);
+    function saveCart(){ localStorage.setItem('vl-body-lab-cart',JSON.stringify(cart)); }
+    function renderCart(){ const items=document.querySelector('.cart-items'), total=cart.reduce((sum,item)=>sum+item.price,0); document.querySelectorAll('.cart-count').forEach(el=>{el.hidden=!cart.length;el.textContent=cart.length;}); document.querySelector('.mobile-cart-count').textContent=`(${cart.length})`; document.querySelector('.cart-total-value').textContent=currency(total); items.innerHTML=cart.length?cart.map((item,index)=>`<div class="cart-item"><div><strong>${item.product}</strong><span>${currency(item.price)}</span></div><button class="remove-item" type="button" data-index="${index}">Remove</button></div>`).join(''):'<p class="empty-state">Your bag is empty. Add a piece from the VL Collective when you’re ready.</p>'; }
+    function openCart(){ closeMenu(); cartDrawer.classList.add('open'); backdrop.classList.add('open'); cartDrawer.setAttribute('aria-hidden','false'); }
+    function closeCart(){ cartDrawer.classList.remove('open'); backdrop.classList.remove('open'); cartDrawer.setAttribute('aria-hidden','true'); }
+    function openMenu(){ menu.classList.add('open'); menu.setAttribute('aria-hidden','false'); menuButton.setAttribute('aria-expanded','true'); }
+    function closeMenu(){ menu.classList.remove('open'); menu.setAttribute('aria-hidden','true'); menuButton.setAttribute('aria-expanded','false'); }
+    const policies={privacy:{title:'Privacy policy',copy:'VL Body Lab may collect the information you voluntarily provide through an inquiry, order request, or email. We use that information only to respond to you, fulfill a request, or improve our offerings. We do not sell personal information. External platforms and affiliate partners have their own privacy practices.'},terms:{title:'Terms of use',copy:'By using this site, you agree to use it lawfully and respectfully. All VL Body Lab content, imagery, logos, and designs are protected and may not be copied or reused without permission. Product availability, pricing, and external offers may change at any time.'},affiliate:{title:'Affiliate disclosure',copy:'Some VL Body Lab links may be affiliate links. If you make a purchase through one of those links, VL Body Lab may receive a commission at no additional cost to you. We only share products and brands that fit the VL lifestyle and are clearly marked when a link is affiliated.'},disclaimer:{title:'Fitness disclaimer',copy:'VL Body Lab content is for general educational and inspirational purposes only. It is not medical advice, nutrition therapy, or a substitute for a qualified healthcare professional. Consult a professional before beginning a new exercise, nutrition, or wellness routine, and move within your own limits.'}};
+    const policyDialog=document.querySelector('#policy-dialog'),policyBody=document.querySelector('#policy-body');document.querySelectorAll('[data-policy]').forEach(button=>button.addEventListener('click',()=>{const policy=policies[button.dataset.policy];policyBody.innerHTML=`<h2>${policy.title}</h2><p>Last updated: July 2026</p><p>${policy.copy}</p>`;policyDialog.showModal();}));document.querySelector('[data-close-policy]').addEventListener('click',()=>policyDialog.close());
+    document.querySelectorAll('.cart-toggle').forEach(btn=>btn.addEventListener('click',openCart)); document.querySelector('.close-cart').addEventListener('click',closeCart); backdrop.addEventListener('click',closeCart); menuButton.addEventListener('click',openMenu); document.querySelector('.menu-close').addEventListener('click',closeMenu); document.querySelectorAll('.mobile-menu a').forEach(link=>link.addEventListener('click',closeMenu));
+    document.querySelectorAll('.color-option').forEach(option=>option.addEventListener('click',()=>{const card=option.closest('[data-product-card]'),image=card.querySelector('.product-image img');image.src=option.dataset.image;image.alt=`${option.dataset.color} ${card.querySelector('.product-name').textContent}`;card.dataset.selectedColor=option.dataset.color;card.querySelectorAll('.color-option').forEach(button=>button.setAttribute('aria-pressed','false'));option.setAttribute('aria-pressed','true');}));
+    document.querySelectorAll('.add-button').forEach(button=>button.addEventListener('click',()=>{const card=button.closest('[data-product-card]'),color=card.dataset.selectedColor||card.querySelector('.color-option[aria-pressed="true"]')?.dataset.color;cart.push({product:`${button.dataset.product}${color?` — ${color}`:''}`,price:Number(button.dataset.price)});saveCart();renderCart();openCart();}));
+    document.querySelectorAll('[data-carousel]').forEach(button=>button.addEventListener('click',()=>{const track=document.getElementById(button.dataset.carousel);track.scrollBy({left:track.clientWidth*.84*Number(button.dataset.direction),behavior:'smooth'});}));
+    document.querySelector('.cart-items').addEventListener('click',event=>{if(!event.target.matches('.remove-item'))return;cart.splice(Number(event.target.dataset.index),1);saveCart();renderCart();});
+    document.querySelector('.checkout-button').addEventListener('click',()=>{if(!cart.length){closeCart();document.querySelector('#shop').scrollIntoView({behavior:'smooth'});return;} const order=cart.map(item=>`• ${item.product} — ${currency(item.price)}`).join('%0D%0A'), total=currency(cart.reduce((sum,item)=>sum+item.price,0)); window.location.href=`mailto:collab@vlbodylab.com?subject=${encodeURIComponent('VL Body Lab order request')}&body=${encodeURIComponent('Hi VL Body Lab,%0D%0A%0D%0AI would like to request the following:%0D%0A')}${order}${encodeURIComponent(`%0D%0A%0D%0AEstimated total: ${total}%0D%0A%0D%0AName:%0D%0ASize(s):%0D%0APlease let me know availability and next steps.`)}`;});
+    document.querySelector('#contact-form').addEventListener('submit',event=>{event.preventDefault();const data=new FormData(event.currentTarget),subject=`VL Body Lab: ${data.get('inquiry-type')}`,body=`Name: ${data.get('name')}%0D%0AEmail: ${data.get('email')}%0D%0AInquiry: ${data.get('inquiry-type')}%0D%0A%0D%0A${data.get('message')}`;window.location.href=`mailto:collab@vlbodylab.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;event.currentTarget.querySelector('.form-status').textContent='Your email app is opening with your inquiry.';});
+    renderCart();
+  </script>
+</body>
+</html>
