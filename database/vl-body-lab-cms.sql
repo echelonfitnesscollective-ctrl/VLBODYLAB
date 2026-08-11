@@ -252,11 +252,14 @@ where content_key in ('home_etsy_case', 'home_etsy_cardholder', 'home_etsy_headp
 -- media_items has no natural unique key to dedupe on, so this only seeds
 -- when the placement is completely empty — safe to re-run, and it won't
 -- fight with anything an admin has already added or removed.
-insert into public.vl_media_items (placement, title, caption, alt_text, source_url, sort_order)
-select v.placement, v.title, v.caption, v.alt_text, v.source_url, v.sort_order
+insert into public.vl_media_items (placement, title, caption, alt_text, source_url, sort_order, published)
+select v.placement, v.title, v.caption, v.alt_text, v.source_url, v.sort_order, v.published
 from (values
-  ('etsy_carousel', 'VL phone case', 'Glossy, protective, and marked with the VL signature.', 'Black VL Body Lab phone case', 'etsy1-1.jpg', 0),
-  ('etsy_carousel', 'VL card holder', 'A refined carry piece for post-gym errands and everyday essentials.', 'Black VL Body Lab card holder', 'etsy3-1.jpg', 1),
-  ('etsy_carousel', 'VL headphones', 'Creator mode, commute mode, locked-in workout mode.', 'Black VL Body Lab headphones', 'etsy4-1.jpg', 2)
-) as v(placement, title, caption, alt_text, source_url, sort_order)
+  ('etsy_carousel', 'VL phone case', 'Glossy, protective, and marked with the VL signature.', 'Black VL Body Lab phone case', 'etsy1-1.jpg', 0, true),
+  ('etsy_carousel', 'VL card holder', 'A refined carry piece for post-gym errands and everyday essentials.', 'Black VL Body Lab card holder', 'etsy3-1.jpg', 1, true),
+  ('etsy_carousel', 'VL headphones', 'Creator mode, commute mode, locked-in workout mode.', 'Black VL Body Lab headphones', 'etsy4-1.jpg', 2, true),
+  -- Draft: a real photo hasn't been uploaded yet. Swap the photo and
+  -- publish it from the Image Studio when it's ready.
+  ('etsy_carousel', 'VL Passport Case', 'A sleek carry case for your passport and travel cards.', 'Black VL Body Lab passport case', 'etsy3-1.jpg', 3, false)
+) as v(placement, title, caption, alt_text, source_url, sort_order, published)
 where not exists (select 1 from public.vl_media_items where placement = 'etsy_carousel');
