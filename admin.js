@@ -305,15 +305,27 @@ document.addEventListener('DOMContentLoaded', () => {
   $$('[data-refresh]').forEach((button) => button.addEventListener('click', () => loadContent()));
   $('#sign-out').addEventListener('click', async () => { await client.auth.signOut(); location.reload(); });
 
+  function showSetPasswordForm() {
+    $('#login-shell').classList.remove('hidden');
+    $('#console').classList.add('hidden');
+    $('#password-login-form').classList.add('hidden');
+    $('#set-password-form').classList.remove('hidden');
+  }
+
   if (client) {
     client.auth.onAuthStateChange((event) => {
-      if (event === 'PASSWORD_RECOVERY') {
-        $('#login-shell').classList.remove('hidden');
-        $('#console').classList.add('hidden');
-        $('#password-login-form').classList.add('hidden');
-        $('#set-password-form').classList.remove('hidden');
-      }
+      if (event === 'PASSWORD_RECOVERY') showSetPasswordForm();
     });
   }
-  requireOperator();
+
+  // Invite links land here with #access_token=...&type=invite. Supabase
+  // establishes a session from that token immediately, but an invited user
+  // has never set a password — send them to the set-password form instead
+  // of straight into the console, so they can actually sign back in later.
+  const authRedirectType = (location.hash.match(/type=(invite|recovery)/) || [])[1];
+  if (authRedirectType) {
+    showSetPasswordForm();
+  } else {
+    requireOperator();
+  }
 });
