@@ -17,7 +17,9 @@ create extension if not exists pgcrypto;
 -- ---------------------------------------------------------------------------
 drop table if exists public.brand_content_items cascade;
 drop table if exists public.brand_media_assets cascade;
-drop function if exists public.is_vl_body_lab_admin();
+-- CASCADE here also covers re-running this script: every policy that
+-- depends on this function is recreated later in this same file.
+drop function if exists public.is_vl_body_lab_admin() cascade;
 
 -- ---------------------------------------------------------------------------
 -- 2. Admin allow-list
