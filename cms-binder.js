@@ -54,6 +54,45 @@
     });
   }
 
+  // List binder: any element with data-media-list="<placement>" gets its
+  // children replaced entirely by published media rows for that placement,
+  // in order — this is how the admin can add/remove/reorder/show/hide
+  // carousel items with no code changes. If a placement has zero published
+  // rows, the static fallback markup already in the HTML is left alone.
+  function applyMediaLists(items) {
+    const groups = items.reduce((all, item) => {
+      if (document.querySelector(`[data-media-list="${item.placement}"]`)) (all[item.placement] ||= []).push(item);
+      return all;
+    }, {});
+    Object.entries(groups).forEach(([placement, entries]) => {
+      const container = document.querySelector(`[data-media-list="${placement}"]`);
+      if (!container || !entries.length) return;
+      container.replaceChildren(...entries.map((item) => {
+        const card = document.createElement('article');
+        card.className = 'etsy-item';
+        const image = document.createElement('img');
+        image.src = item.source_url;
+        image.alt = item.alt_text || item.title || 'VL Body Lab';
+        const body = document.createElement('div');
+        body.className = 'etsy-item-body';
+        const title = document.createElement('h3');
+        title.textContent = item.title;
+        body.append(title);
+        if (item.caption) {
+          const caption = document.createElement('p');
+          caption.textContent = item.caption;
+          body.append(caption);
+        }
+        const link = document.createElement('a');
+        link.href = '#contact';
+        link.textContent = 'Request the Etsy link →';
+        body.append(link);
+        card.append(image, body);
+        return card;
+      }));
+    });
+  }
+
   async function loadVLCMS() {
     const [{ data: content }, { data: media }] = await Promise.all([
       client.from(config.contentTable).select('*').eq('published', true),
@@ -61,6 +100,7 @@
     ]);
     applyContent(content || []);
     applyMedia(media || []);
+    applyMediaLists(media || []);
   }
 
   document.addEventListener('DOMContentLoaded', loadVLCMS);

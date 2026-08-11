@@ -139,7 +139,8 @@ function renderContentCard(item) {
   card.className = 'content-card';
   card.innerHTML = `
     <span class="badge ${item.published ? '' : 'draft'}">${item.published ? 'Published' : 'Draft'} · ${escapeHtml(item.section_name)}</span>
-    <h3>${escapeHtml(safe(item.title || item.eyebrow))}</h3>
+    ${item.eyebrow ? `<p class="field-eyebrow">${escapeHtml(item.eyebrow)}</p>` : ''}
+    <h3>${escapeHtml(safe(item.title))}</h3>
     <p>${escapeHtml(safe(item.body || item.cta_label))}</p>
     <footer><span>${item.cta_url ? escapeHtml(item.cta_url) : ''}</span><button type="button">Edit ↗</button></footer>
   `;
@@ -157,6 +158,24 @@ async function loadContent() {
     list.replaceChildren();
     allContent.filter((item) => pageForKey(item.content_key) === page).forEach((item) => list.append(renderContentCard(item)));
   });
+  renderOverview();
+}
+
+function renderOverview() {
+  const list = $('#list-overview');
+  list.replaceChildren();
+  const publishedCount = allContent.filter((item) => item.published).length;
+  const draftCount = allContent.length - publishedCount;
+  const stat = (label, value) => {
+    const card = document.createElement('article');
+    card.className = 'content-card';
+    card.innerHTML = `<h3>${escapeHtml(label)}</h3><p style="font-size:1.6rem;font-weight:800;color:var(--ink)">${value}</p>`;
+    return card;
+  };
+  list.append(stat('Total text fields', allContent.length));
+  list.append(stat('Published live', publishedCount));
+  list.append(stat('Drafts (hidden)', draftCount));
+  list.append(stat('Pages covered', 'Homepage, Grit, Kitchen, Smoothies, Snacks'));
 }
 
 function openEditor(item) {
@@ -205,6 +224,16 @@ async function saveContent(event) {
 // ---------------------------------------------------------------------------
 // Image studio
 // ---------------------------------------------------------------------------
+const PLACEMENT_LABELS = {
+  hero_logo: 'Hero — logo',
+  hero_background: 'Hero — background photo',
+  travel_photo: 'Travel & lifestyle — feature photo',
+  creator_training: 'Creator + TikTok tile — training photo',
+  creator_lifestyle: 'Creator + Instagram tile — lifestyle photo',
+  social_youtube: 'Tap In — YouTube tile',
+  etsy_carousel: 'Etsy drops carousel item',
+};
+
 function mediaCard(item) {
   const card = document.createElement('article');
   card.className = 'media-card';
@@ -212,7 +241,8 @@ function mediaCard(item) {
     <img src="${escapeHtml(item.source_url)}" alt="${escapeHtml(item.alt_text)}">
     <div class="media-body">
       <p>${item.published ? 'Published' : 'Draft'}${item.target_filename ? ` · replaces ${escapeHtml(item.target_filename)}` : ''}</p>
-      <h3>${escapeHtml(item.placement)}</h3>
+      <h3>${escapeHtml(item.title || PLACEMENT_LABELS[item.placement] || item.placement)}</h3>
+      <p>${escapeHtml(PLACEMENT_LABELS[item.placement] || item.placement)}</p>
       <div class="media-actions">
         <button type="button" data-action="toggle">${item.published ? 'Unpublish' : 'Publish'}</button>
         <button type="button" data-action="delete">Delete</button>
@@ -230,7 +260,7 @@ function mediaCard(item) {
     } catch (err) { message(feedback, err?.message || 'Something went wrong.', true); }
   });
   card.querySelector('[data-action="delete"]').addEventListener('click', async (event) => {
-    if (!confirm(`Delete the "${item.placement}" image from the studio?`)) return;
+    if (!confirm(`Delete "${item.title || item.placement}" from the image studio?`)) return;
     const feedback = $('#media-feedback');
     try {
       await withButtonState(event.currentTarget, '…', async () => {
@@ -245,11 +275,16 @@ function mediaCard(item) {
 }
 
 async function loadMedia() {
-  const { data, error } = await client.from('vl_media_items').select('*').order('sort_order').order('created_at', { ascending: false });
+  const { data, error } = await client.from('vl_media_items').select('*').order('placement').order('sort_order').order('created_at', { ascending: false });
   if (error) return;
   const list = $('#media-list');
   list.replaceChildren(...(data || []).map(mediaCard));
   $('#media-count').textContent = `${(data || []).length} image${(data || []).length === 1 ? '' : 's'}`;
+}
+
+function updateTargetFilenameVisibility() {
+  const placement = $('#media-placement').value;
+  $('#target-filename-field').classList.toggle('hidden', placement === 'etsy_carousel');
 }
 
 async function uploadMedia(event) {
@@ -269,9 +304,11 @@ async function uploadMedia(event) {
       const upload = await client.storage.from('vl-body-lab-media').upload(path, file, { contentType: file.type, upsert: false });
       if (upload.error) { message(feedback, upload.error.message, true); return; }
       const source_url = client.storage.from('vl-body-lab-media').getPublicUrl(path).data.publicUrl;
+      const placement = values.get('placement');
       const payload = {
-        placement: values.get('placement').trim(),
-        target_filename: values.get('target_filename').trim() || null,
+        placement,
+        target_filename: placement === 'etsy_carousel' ? null : (values.get('target_filename').trim() || null),
+        title: values.get('title').trim(),
         alt_text: values.get('alt_text').trim(),
         caption: values.get('caption').trim() || null,
         source_url,
@@ -283,6 +320,7 @@ async function uploadMedia(event) {
       if (error) { await client.storage.from('vl-body-lab-media').remove([path]); message(feedback, error.message, true); return; }
       form.reset();
       form.elements.sort_order.value = '0';
+      updateTargetFilenameVisibility();
       message(feedback, payload.published ? 'Uploaded and published. Check the live page.' : 'Uploaded as a private draft.');
       await loadMedia();
     });
@@ -301,6 +339,8 @@ document.addEventListener('DOMContentLoaded', () => {
   $('#content-form').addEventListener('submit', saveContent);
   $('#cancel-edit').addEventListener('click', () => $('#content-editor').close());
   $('#media-form').addEventListener('submit', uploadMedia);
+  $('#media-placement').addEventListener('change', updateTargetFilenameVisibility);
+  updateTargetFilenameVisibility();
   $$('.tab').forEach((tab) => tab.addEventListener('click', () => showPanel(tab.dataset.panel)));
   $$('[data-refresh]').forEach((button) => button.addEventListener('click', () => loadContent()));
   $('#sign-out').addEventListener('click', async () => { await client.auth.signOut(); location.reload(); });

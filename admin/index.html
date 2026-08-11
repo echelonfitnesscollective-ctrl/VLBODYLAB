@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+  <title>VL Body Lab | Admin Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../cms-config.js"></script><script src="admin.js" defer></script>
+</head>
+<body>
+  <main class="shell">
+    <header class="top">
+      <a class="brand" href="../index.html">VL BODY LAB</a>
+      <div class="top-actions">
+        <a class="button button-light" href="../index.html">View site</a>
+        <span class="operator-email hidden" id="operator-email"></span>
+        <button class="button button-light hidden" id="sign-out" type="button">Sign out</button>
+      </div>
+    </header>
+
+    <section class="login-shell" id="login-shell">
+      <p class="eyebrow">Private admin access</p>
+      <h1>Admin studio</h1>
+      <p class="lede">Sign in with an approved VL Body Lab administrator account. The database enforces admin-only editing even if this page URL is shared.</p>
+
+      <form class="form" id="password-login-form">
+        <label>Email<input name="email" type="email" autocomplete="email" required></label>
+        <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+        <button class="button" type="submit">Secure sign in</button>
+        <button class="link-button" id="forgot-password-link" type="button">Forgot your password?</button>
+      </form>
+
+      <form class="form hidden" id="set-password-form">
+        <p class="lede">Set a password for your account, then you'll be signed in automatically.</p>
+        <label>New password<input name="password" type="password" autocomplete="new-password" minlength="8" required></label>
+        <button class="button" type="submit">Save password</button>
+        <p class="status" id="set-password-feedback"></p>
+      </form>
+
+      <p class="status" id="login-feedback"></p>
+    </section>
+
+    <section class="hidden" id="console">
+      <nav class="tabs">
+        <button class="tab active" type="button" data-panel="overview">Overview</button>
+        <button class="tab" type="button" data-panel="homepage">Homepage</button>
+        <button class="tab" type="button" data-panel="grit">Grit</button>
+        <button class="tab" type="button" data-panel="kitchen">Kitchen</button>
+        <button class="tab" type="button" data-panel="smoothies">Smoothies</button>
+        <button class="tab" type="button" data-panel="snacks">Snacks</button>
+        <button class="tab" type="button" data-panel="images">Image Studio</button>
+        <button class="tab" type="button" data-panel="guide">Quick Guide</button>
+      </nav>
+
+      <section class="panel active" data-panel-name="overview">
+        <div class="panel-head"><h2>Overview</h2></div>
+        <div class="list" id="list-overview"></div>
+      </section>
+
+      <section class="panel" data-panel-name="homepage"><div class="panel-head"><h2>Homepage content</h2><button class="button button-light" data-refresh type="button">Refresh</button></div><div class="list" id="list-homepage"></div></section>
+      <section class="panel" data-panel-name="grit"><div class="panel-head"><h2>Grit page</h2><button class="button button-light" data-refresh type="button">Refresh</button></div><div class="list" id="list-grit"></div></section>
+      <section class="panel" data-panel-name="kitchen"><div class="panel-head"><h2>Kitchen page</h2><button class="button button-light" data-refresh type="button">Refresh</button></div><div class="list" id="list-kitchen"></div></section>
+      <section class="panel" data-panel-name="smoothies"><div class="panel-head"><h2>Smoothies page</h2><button class="button button-light" data-refresh type="button">Refresh</button></div><div class="list" id="list-smoothies"></div></section>
+      <section class="panel" data-panel-name="snacks"><div class="panel-head"><h2>Snacks page</h2><button class="button button-light" data-refresh type="button">Refresh</button></div><div class="list" id="list-snacks"></div></section>
+
+      <section class="panel" data-panel-name="images">
+        <div class="panel-head"><h2>Image studio</h2><span id="media-count" class="operator-email"></span></div>
+        <form class="media-form" id="media-form">
+          <p class="eyebrow">Upload a replacement or new image</p>
+          <label>Image file<input name="file" type="file" accept="image/png,image/jpeg,image/webp" required></label>
+          <div class="grid-2">
+            <label>Placement<select name="placement" id="media-placement" required>
+              <option value="hero_logo">Hero — logo</option>
+              <option value="hero_background">Hero — background photo</option>
+              <option value="travel_photo">Travel &amp; lifestyle — feature photo</option>
+              <option value="creator_training">Creator + TikTok tile — training photo</option>
+              <option value="creator_lifestyle">Creator + Instagram tile — lifestyle photo</option>
+              <option value="social_youtube">Tap In — YouTube tile</option>
+              <option value="etsy_carousel">Etsy drops carousel — add an item</option>
+            </select></label>
+            <label>Headline<input name="title" required placeholder="e.g. VL phone case"></label>
+            <label class="span-2">Alt text<input name="alt_text" required placeholder="Describe the image"></label>
+            <label class="span-2">Caption (shown under Etsy carousel items only)<input name="caption"></label>
+            <label>Sort order<input name="sort_order" type="number" value="0" min="0"></label>
+            <label>Status<select name="published"><option value="true">Publish now</option><option value="false">Save as draft</option></select></label>
+            <label class="span-2" id="target-filename-field">Replaces this exact filename on the page (only for the single-image placements above, not the Etsy carousel)<input name="target_filename" placeholder="e.g. t1.jpg"></label>
+          </div>
+          <button class="button" type="submit">Upload image</button>
+          <p class="status" id="media-feedback"></p>
+        </form>
+        <div class="media-list" id="media-list"></div>
+      </section>
+
+      <section class="panel" data-panel-name="guide">
+        <div class="panel-head"><h2>Quick guide</h2></div>
+        <div class="guide">
+          <article>
+            <h3>Editing text</h3>
+            <p>Every card in the Homepage / Grit / Kitchen / Smoothies / Snacks tabs already shows exactly what's live right now — the badge tells you Published or Draft plus which section it's from. Click <strong>Edit ↗</strong> to open it with every field prefilled. Nothing opens blank, and closing without saving changes nothing.</p>
+            <p>Set the toggle to <strong>Draft</strong> to hide something from the live site without deleting it — the page falls back to showing nothing for that field until you publish it again.</p>
+          </article>
+          <article>
+            <h3>Etsy drops carousel</h3>
+            <p>Unlike the other sections, the Etsy Drops carousel is a free-form list, not fixed cards — add, remove, publish, or unpublish items from the <strong>Image Studio</strong> tab and the number of items on the live site changes to match. Use placement <code>Etsy drops carousel — add an item</code> when uploading.</p>
+          </article>
+          <article>
+            <h3>Replacing an existing photo</h3>
+            <p>For the Hero, Travel, Creator, and Tap In photos, pick the matching placement in the Image Studio's dropdown and leave the filename field filled in with the current file it should replace (each option shows which one). That swaps every place on the site using that photo at once.</p>
+            <p>Product photos (leggings, hats, hoodies, etc.) use their own color-swatch buttons on the live site and aren't part of the Image Studio.</p>
+          </article>
+          <article>
+            <h3>If something looks wrong</h3>
+            <p>Every save and upload shows a message right on the form — green for success, red for an error. If you ever see a red message, nothing was lost; fix what it's pointing at and try again.</p>
+          </article>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <dialog id="content-editor">
+    <form class="dialog-body" id="content-form">
+      <input type="hidden" name="id">
+      <p class="eyebrow" id="editor-section"></p>
+      <h2 id="editor-title">Edit content</h2>
+      <div class="grid-2">
+        <label class="span-2">Small label (eyebrow)<input name="eyebrow" maxlength="80"></label>
+        <label class="span-2">Title / headline<input name="title" maxlength="160"></label>
+        <label class="span-2">Body copy<textarea name="body" rows="4" maxlength="800"></textarea></label>
+        <label>Button / link label<input name="cta_label" maxlength="60"></label>
+        <label>Button / link URL<input name="cta_url" maxlength="500" placeholder="https:// or mailto:"></label>
+        <label class="span-2">Status<select name="published"><option value="true">Published (live)</option><option value="false">Draft (hidden)</option></select></label>
+      </div>
+      <p class="status" id="content-feedback"></p>
+      <div class="dialog-actions">
+        <button class="button button-light" type="button" id="cancel-edit">Cancel</button>
+        <button class="button" type="submit">Save changes</button>
+      </div>
+    </form>
+  </dialog>
+</body>
+</html>

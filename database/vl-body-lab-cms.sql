@@ -104,7 +104,11 @@ grant insert, update, delete on public.vl_content_items to authenticated;
 -- ---------------------------------------------------------------------------
 create table if not exists public.vl_media_items (
   id uuid primary key default gen_random_uuid(),
-  placement text not null,
+  placement text not null check (placement in (
+    'hero_logo', 'hero_background', 'travel_photo',
+    'creator_training', 'creator_lifestyle', 'social_youtube',
+    'etsy_carousel'
+  )),
   target_filename text,
   title text not null default 'VL Body Lab',
   caption text,
@@ -116,6 +120,15 @@ create table if not exists public.vl_media_items (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+-- Re-applies the placement check even if this table already existed from an
+-- earlier run of this script, before the enum was constrained.
+alter table public.vl_media_items drop constraint if exists vl_media_items_placement_check;
+alter table public.vl_media_items add constraint vl_media_items_placement_check check (placement in (
+  'hero_logo', 'hero_background', 'travel_photo',
+  'creator_training', 'creator_lifestyle', 'social_youtube',
+  'etsy_carousel'
+));
 
 create index if not exists vl_media_public_idx on public.vl_media_items (placement, published, sort_order, created_at desc);
 
@@ -175,14 +188,12 @@ Strong by design.', null, null, null),
 ('home_product_hoodie', 'Home / VL Collective', null, 'Rockstar Hoodie', '$65.00', null, null),
 ('home_etsy_title', 'Home / Etsy Drops', null, 'Etsy drops', null, null, null),
 ('home_etsy_intro', 'Home / Etsy Drops', null, null, 'The extras that make the VL lifestyle feel complete—made-to-order accessories and creator merch designed for your gym bag, commute, and everyday reset.', null, null),
-('home_etsy_case', 'Home / Etsy Drops', null, 'VL phone case', 'Glossy, protective, and marked with the VL signature.', 'Request the Etsy link →', null),
-('home_etsy_cardholder', 'Home / Etsy Drops', null, 'VL card holder', 'A refined carry piece for post-gym errands and everyday essentials.', 'Request the Etsy link →', null),
-('home_etsy_headphones', 'Home / Etsy Drops', null, 'VL headphones', 'Creator mode, commute mode, locked-in workout mode.', 'Request the Etsy link →', null),
 ('home_essentials_title', 'Home / Essentials', null, 'The Essentials', null, null, null),
 ('home_essentials_note', 'Home / Essentials', null, null, 'Niiy’s current gym and lifestyle favorites. Some links may be affiliate links, which means VL Body Lab may earn a commission at no added cost to you.', null, null),
 ('home_essentials_preworkout', 'Home / Essentials', null, 'Pre-workout edit', 'High-energy picks for early lifts, long days, and locked-in Rockstar sessions.', 'Shop her TikTok →', 'https://www.tiktok.com/@vloneniiy'),
 ('home_essentials_gymbag', 'Home / Essentials', null, 'Gym bag non-negotiables', 'Hydration, straps, bands, and all the little things that make training smoother.', 'See the edit →', 'https://www.instagram.com/vloneniiy?igsh=MWR2ZzR5MzZhbmNlOA=='),
 ('home_essentials_recovery', 'Home / Essentials', null, 'Glow & recovery', 'Post-workout recovery and lifestyle favorites that keep the Princess energy intact.', 'Get the links →', 'https://www.tiktok.com/@vloneniiy'),
+('home_essentials_extra', 'Home / Essentials', null, 'Add your next favorite', 'Open this card in the admin console to add a new pick and its link.', 'Add a link →', 'https://www.tiktok.com/@vloneniiy'),
 ('home_creator_title', 'Home / Creator', null, 'Creator mode', null, null, null),
 ('home_creator_body', 'Home / Creator', null, null, 'Training clips, gym fits, faith-led routines, and the real work behind the glow. Follow the VL journey or bring your brand into the story.', null, null),
 ('home_creator_cta_watch', 'Home / Creator', null, null, null, 'Watch on TikTok', 'https://www.tiktok.com/@vloneniiy'),
@@ -228,3 +239,24 @@ Grit Manual', 'The definitive 12-week guide to high-performance aesthetic traini
 ('snacks_card_turkey', 'Snacks / Recipes', 'Savory', 'Turkey Roll-Ups', 'Turkey, a spread you love, crunchy vegetables, and a fast source of protein.', null, null),
 ('snacks_card_box', 'Snacks / Recipes', 'On the go', 'Protein Box', 'Pair a protein with fruit, something crunchy, and water before you head out.', null, null)
 on conflict (content_key) do nothing;
+
+-- The 3 Etsy items are now a dynamic media-list carousel (see section 6
+-- below) instead of fixed content rows, so an admin can add/remove/reorder
+-- items without a code change. Retire the old fixed rows if they exist.
+delete from public.vl_content_items
+where content_key in ('home_etsy_case', 'home_etsy_cardholder', 'home_etsy_headphones');
+
+-- ---------------------------------------------------------------------------
+-- 6. Seed the Etsy Drops carousel as media_items (placement = 'etsy_carousel')
+-- ---------------------------------------------------------------------------
+-- media_items has no natural unique key to dedupe on, so this only seeds
+-- when the placement is completely empty — safe to re-run, and it won't
+-- fight with anything an admin has already added or removed.
+insert into public.vl_media_items (placement, title, caption, alt_text, source_url, sort_order)
+select v.placement, v.title, v.caption, v.alt_text, v.source_url, v.sort_order
+from (values
+  ('etsy_carousel', 'VL phone case', 'Glossy, protective, and marked with the VL signature.', 'Black VL Body Lab phone case', 'etsy1-1.jpg', 0),
+  ('etsy_carousel', 'VL card holder', 'A refined carry piece for post-gym errands and everyday essentials.', 'Black VL Body Lab card holder', 'etsy3-1.jpg', 1),
+  ('etsy_carousel', 'VL headphones', 'Creator mode, commute mode, locked-in workout mode.', 'Black VL Body Lab headphones', 'etsy4-1.jpg', 2)
+) as v(placement, title, caption, alt_text, source_url, sort_order)
+where not exists (select 1 from public.vl_media_items where placement = 'etsy_carousel');
