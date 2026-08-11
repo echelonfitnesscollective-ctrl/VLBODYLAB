@@ -11,14 +11,12 @@
 create extension if not exists pgcrypto;
 
 -- ---------------------------------------------------------------------------
--- 1. Retire the old announcement-feed schema (confirmed unused: 0 live rows)
+-- 1. Retire the old announcement-feed schema, if it exists in this project
+--    (CASCADE drops any dependent policies/triggers along with the table —
+--    safe even if these objects were never created here).
 -- ---------------------------------------------------------------------------
-drop policy if exists "Public can view active VL content" on public.brand_content_items;
-drop policy if exists "VL admin manages content" on public.brand_content_items;
-drop policy if exists "Public can view VL image replacements" on public.brand_media_assets;
-drop policy if exists "VL admin manages image replacements" on public.brand_media_assets;
-drop table if exists public.brand_content_items;
-drop table if exists public.brand_media_assets;
+drop table if exists public.brand_content_items cascade;
+drop table if exists public.brand_media_assets cascade;
 drop function if exists public.is_vl_body_lab_admin();
 
 -- ---------------------------------------------------------------------------
