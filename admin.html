@@ -5,18 +5,153 @@
   <title>VL Body Lab | Admin Studio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="cms-config.js"></script><script src="cms-admin.js" defer></script><script src="cms-image-manager.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="cms-config.js"></script><script src="admin.js" defer></script>
   <style>
-    :root{--pink:#ffd1e3;--rose:#e182ad;--ink:#120d10;--paper:#fffafd;--muted:#826d76;--line:rgba(18,13,16,.16);--display:'Syncopate',sans-serif;--body:'Montserrat',sans-serif}*{box-sizing:border-box}body{margin:0;background:#f4edf0;color:var(--ink);font-family:var(--body)}button,input,textarea,select{font:inherit}.shell{max-width:1420px;margin:auto;padding:clamp(20px,5vw,70px)}.top{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:34px}.brand{color:var(--ink);font:700 clamp(.9rem,2vw,1.12rem) var(--display);letter-spacing:.11em;text-decoration:none}.eyebrow{margin:0 0 9px;color:var(--rose);font-size:.61rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase}h1,h2,h3{font-family:var(--display);text-transform:uppercase}h1{margin:0;font-size:clamp(1.55rem,4vw,2.65rem);line-height:1.3}.top-actions{display:flex;gap:10px;flex-wrap:wrap}.button{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--ink);padding:13px 16px;background:var(--ink);color:#fff;font-size:.63rem;font-weight:800;letter-spacing:.12em;text-decoration:none;text-transform:uppercase;cursor:pointer}.button:hover{background:var(--rose);border-color:var(--rose)}.button-light{background:transparent;color:var(--ink)}.login{max-width:480px;margin:9vh auto;background:var(--paper);border:1px solid var(--ink);padding:clamp(25px,5vw,48px);box-shadow:13px 13px 0 var(--pink)}.login p{color:var(--muted);font-size:.84rem;line-height:1.7}.form{display:grid;gap:13px}.form label{display:grid;gap:7px;font-size:.62rem;font-weight:800;letter-spacing:.1em}.form input,.form textarea,.form select{width:100%;border:1px solid var(--ink);background:#fff;padding:12px;border-radius:0;color:var(--ink)}.form textarea{resize:vertical}.status{min-height:19px;margin:0;color:var(--muted);font-size:.73rem;font-weight:700}.hidden{display:none!important}.intro{display:flex;justify-content:space-between;gap:24px;align-items:flex-start;margin-bottom:18px;padding:28px;border:1px solid var(--ink);background:linear-gradient(110deg,#fffafd,#f9dce8)}.intro p{max-width:720px;margin:0;color:var(--muted);font-size:.84rem;line-height:1.75}.placement-key{display:flex;flex-wrap:wrap;gap:7px}.placement-key span{padding:8px 10px;border:1px solid var(--ink);font-size:.58rem;font-weight:800;letter-spacing:.08em}.layout{display:grid;grid-template-columns:minmax(300px,.85fr) minmax(430px,1.15fr);gap:18px}.panel{padding:25px;border:1px solid var(--ink);background:var(--paper)}.panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:19px}.panel h2{margin:4px 0 0;font-size:1.07rem}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.span-2{grid-column:span 2}.form-actions{display:flex;gap:10px;flex-wrap:wrap}.list{display:grid;gap:10px;max-height:720px;overflow:auto;padding-right:3px}.item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:15px;padding:17px;border:1px solid var(--line);background:#fff}.item.live{border-left:4px solid var(--rose)}.item.scheduled{border-left:4px solid #7794aa}.item h3{margin:6px 0;font-size:.86rem;line-height:1.55}.item p{margin:0;color:var(--muted);font-size:.75rem;line-height:1.6}.meta{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}.meta span{font-size:.58rem;font-weight:800;letter-spacing:.07em}.tag{color:var(--rose)}.actions{display:grid;gap:7px;align-content:start}.actions button{min-width:95px;padding:9px;border:1px solid var(--ink);background:transparent;font-size:.58rem;font-weight:800;letter-spacing:.08em;cursor:pointer}.actions button:hover{background:var(--ink);color:#fff}.manual{margin-top:18px;padding:25px;border:1px solid var(--ink);background:var(--ink);color:#fff}.manual h2{margin:5px 0 17px;color:var(--pink);font-size:1.15rem}.manual-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.manual article{padding:17px;border:1px solid rgba(255,255,255,.23)}.manual strong{display:block;margin-bottom:9px;color:var(--pink);font-size:.61rem;letter-spacing:.1em}.manual p{margin:0;color:#e8dfe3;font-size:.73rem;line-height:1.7}@media(max-width:900px){.layout{grid-template-columns:1fr}.intro{display:grid}.manual-grid{grid-template-columns:1fr}}@media(max-width:560px){.shell{padding:20px}.top,.item{display:grid}.grid{grid-template-columns:1fr}.span-2{grid-column:auto}.actions{grid-template-columns:1fr 1fr}.intro,.panel,.manual{padding:21px}}
+    :root{--pink:#ffd1e3;--rose:#e182ad;--ink:#120d10;--paper:#fffafd;--muted:#826d76;--line:rgba(18,13,16,.16);--display:'Syncopate',sans-serif;--body:'Montserrat',sans-serif}
+    *{box-sizing:border-box}body{margin:0;background:#f4edf0;color:var(--ink);font-family:var(--body)}button,input,textarea,select{font:inherit}
+    .shell{max-width:1320px;margin:auto;padding:clamp(20px,5vw,64px)}
+    .top{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:30px}
+    .brand{color:var(--ink);font:700 clamp(.9rem,2vw,1.12rem) var(--display);letter-spacing:.11em;text-decoration:none}
+    .eyebrow{margin:0 0 9px;color:var(--rose);font-size:.61rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase}
+    h1,h2,h3{font-family:var(--display);text-transform:uppercase}h1{margin:0;font-size:clamp(1.4rem,3.6vw,2.3rem);line-height:1.3}
+    .top-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+    .operator-email{font-size:.68rem;color:var(--muted);font-weight:700}
+    .button{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--ink);padding:12px 16px;background:var(--ink);color:#fff;font-size:.62rem;font-weight:800;letter-spacing:.12em;text-decoration:none;text-transform:uppercase;cursor:pointer}
+    .button:hover{background:var(--rose);border-color:var(--rose)}.button:disabled{opacity:.55;cursor:wait}
+    .button-light{background:transparent;color:var(--ink)}
+    .link-button{border:0;background:none;padding:0;color:var(--rose);font-size:.72rem;font-weight:700;text-decoration:underline;cursor:pointer}
+    .hidden{display:none!important}
+    .login-shell{max-width:460px;margin:9vh auto;background:var(--paper);border:1px solid var(--ink);padding:clamp(24px,5vw,44px);box-shadow:12px 12px 0 var(--pink)}
+    .login-shell p.lede{color:var(--muted);font-size:.83rem;line-height:1.7}
+    .form{display:grid;gap:13px}.form label{display:grid;gap:7px;font-size:.62rem;font-weight:800;letter-spacing:.1em}
+    .form input,.form textarea,.form select{width:100%;border:1px solid var(--ink);background:#fff;padding:12px;border-radius:0;color:var(--ink)}
+    .form textarea{resize:vertical}
+    .status{min-height:19px;margin:10px 0 0;font-size:.73rem;font-weight:700}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;border-bottom:1px solid var(--line);padding-bottom:14px}
+    .tab{border:1px solid var(--ink);background:transparent;padding:10px 15px;font-size:.62rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
+    .tab.active{background:var(--ink);color:#fff}
+    .panel{display:none}.panel.active{display:block}
+    .panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
+    .panel-head h2{font-size:1.05rem;margin:0}
+    .list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+    .content-card{border:1px solid var(--line);background:var(--paper);padding:18px;display:flex;flex-direction:column;gap:8px}
+    .badge{align-self:flex-start;padding:5px 9px;border:1px solid var(--ink);font-size:.55rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+    .badge.draft{color:var(--muted);border-color:var(--line)}
+    .content-card h3{margin:0;font-size:.82rem;text-transform:none;font-family:var(--body);font-weight:800;line-height:1.5}
+    .content-card p{margin:0;color:var(--muted);font-size:.76rem;line-height:1.6}
+    .content-card footer{margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:10px;padding-top:10px}
+    .content-card footer span{font-size:.62rem;color:var(--rose);font-weight:700}
+    .content-card footer button{padding:9px 13px;border:1px solid var(--ink);background:transparent;font-size:.6rem;font-weight:800;letter-spacing:.08em;cursor:pointer}
+    .content-card footer button:hover{background:var(--ink);color:#fff}
+    dialog{width:min(560px,calc(100% - 32px));border:1px solid var(--ink);padding:0;background:var(--paper);color:var(--ink);box-shadow:0 24px 80px rgba(0,0,0,.35)}
+    dialog::backdrop{background:rgba(18,13,16,.72)}
+    .dialog-body{padding:clamp(22px,5vw,38px)}
+    .dialog-body h2{font-size:1.1rem;margin:4px 0 18px}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .span-2{grid-column:span 2}
+    .dialog-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:16px}
+    .media-form{display:grid;gap:12px;margin-bottom:30px;padding:22px;border:1px solid var(--ink);background:var(--paper)}
+    .media-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+    .media-card{border:1px solid var(--line);background:var(--paper);overflow:hidden;display:flex;flex-direction:column}
+    .media-card img{width:100%;aspect-ratio:4/3;object-fit:cover;background:#f0e2e8}
+    .media-card .media-body{padding:14px;display:flex;flex-direction:column;gap:6px;flex:1}
+    .media-card h3{margin:0;font-size:.75rem;text-transform:none;font-family:var(--body);font-weight:800}
+    .media-card p{margin:0;color:var(--muted);font-size:.68rem;line-height:1.5}
+    .media-actions{display:flex;gap:8px;margin-top:auto}
+    .media-actions button{flex:1;padding:8px;border:1px solid var(--ink);background:transparent;font-size:.58rem;font-weight:800;letter-spacing:.08em;cursor:pointer}
+    .media-actions button:hover{background:var(--ink);color:#fff}
+    @media(max-width:560px){.grid-2{grid-template-columns:1fr}.span-2{grid-column:auto}}
   </style>
 </head>
 <body>
-  <main class="shell"><header class="top"><a class="brand" href="index.html">VL BODY LAB</a><div class="top-actions"><a class="button button-light" href="index.html">View site</a><button class="button button-light hidden" id="sign-out" type="button">Sign out</button></div></header>
-    <section class="login" id="login-panel"><p class="eyebrow">Private creator access</p><h1>Admin studio</h1><p>Sign in with the approved VL Body Lab administrator account. The database enforces admin-only editing even if this page URL is shared.</p><form class="form" id="login-form"><label>Email<input name="email" type="email" autocomplete="email" required></label><label>Password<input name="password" type="password" autocomplete="current-password" required></label><button class="button" type="submit">Secure sign in</button><p class="status" id="login-status"></p></form></section>
-    <section class="hidden" id="cms-panel"><div class="intro"><div><p class="eyebrow">VL Body Lab CMS</p><h1>Control live content</h1><p>Publish announcements, product moments, affiliate edits, creator updates, and travel content without touching website code. Drafts remain private; scheduled items appear automatically; expired items disappear automatically.</p></div><div class="placement-key"><span>Home</span><span>The Lab</span><span>Collective</span><span>Etsy</span><span>Essentials</span><span>Creator</span><span>Travel</span></div></div>
-      <div class="layout"><form class="panel form" id="content-form"><input type="hidden" name="id"><div class="panel-head"><div><p class="eyebrow">Content editor</p><h2 id="editor-title">Create an update</h2></div></div><div class="grid"><label>Placement<select name="placement"><option value="homepage">Homepage</option><option value="lab">The Lab</option><option value="shop">The Collective</option><option value="etsy">Etsy Drops</option><option value="essentials">The Essentials</option><option value="creator">Creator Mode</option><option value="travel">Travel & Lifestyle</option></select></label><label>Release<select name="status"><option value="Draft">Save as draft</option><option value="Published">Publish now</option><option value="Scheduled">Schedule release</option></select></label><label class="span-2">Small label<input name="eyebrow" maxlength="60" placeholder="Example: New drop"></label><label class="span-2">Headline<input name="title" maxlength="100" required placeholder="What should visitors see?"></label><label class="span-2">Message<textarea name="body" rows="5" maxlength="600" placeholder="Write the update in a clear, premium voice."></textarea></label><label>Button label<input name="cta_label" maxlength="40" placeholder="Optional"></label><label>Button link<input name="cta_url" maxlength="500" placeholder="https:// or /page"></label><label class="span-2">Image URL<input name="image_url" type="url" maxlength="1000" placeholder="Optional direct image URL"></label><label>Goes live<input name="publish_at" type="datetime-local" required></label><label>Expires<input name="expires_at" type="datetime-local"></label><label>Priority<input name="sort_order" type="number" min="0" max="999" value="0"></label></div><div class="form-actions"><button class="button" id="save-button" type="submit">Save update</button><button class="button button-light hidden" id="cancel-edit" type="button">Cancel edit</button></div><p class="status" id="form-status"></p></form>
-      <section class="panel"><div class="panel-head"><div><p class="eyebrow">Content queue</p><h2>Your updates</h2></div><button class="button button-light" id="refresh" type="button">Refresh</button></div><div class="list" id="content-list"></div></section></div>
-      <section class="manual"><p class="eyebrow">Operator manual</p><h2>Keep the creator business current</h2><div class="manual-grid"><article><strong>1. WRITE</strong><p>Use clear headlines, one message, and one focused action. Add a direct image URL only when it supports the update.</p></article><article><strong>2. RELEASE</strong><p>Draft to prepare privately. Publish for an immediate update. Schedule for a launch, trip, collaboration, or planned drop.</p></article><article><strong>3. RETIRE</strong><p>Add an expiry to temporary offers, affiliate moments, and announcements. It removes itself automatically when the date passes.</p></article></div></section>
+  <main class="shell">
+    <header class="top">
+      <a class="brand" href="index.html">VL BODY LAB</a>
+      <div class="top-actions">
+        <a class="button button-light" href="index.html">View site</a>
+        <span class="operator-email hidden" id="operator-email"></span>
+        <button class="button button-light hidden" id="sign-out" type="button">Sign out</button>
+      </div>
+    </header>
+
+    <section class="login-shell" id="login-shell">
+      <p class="eyebrow">Private admin access</p>
+      <h1>Admin studio</h1>
+      <p class="lede">Sign in with an approved VL Body Lab administrator account. The database enforces admin-only editing even if this page URL is shared.</p>
+
+      <form class="form" id="password-login-form">
+        <label>Email<input name="email" type="email" autocomplete="email" required></label>
+        <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+        <button class="button" type="submit">Secure sign in</button>
+        <button class="link-button" id="forgot-password-link" type="button">Forgot your password?</button>
+      </form>
+
+      <form class="form hidden" id="set-password-form">
+        <p class="lede">Set a password for your account, then you'll be signed in automatically.</p>
+        <label>New password<input name="password" type="password" autocomplete="new-password" minlength="8" required></label>
+        <button class="button" type="submit">Save password</button>
+        <p class="status" id="set-password-feedback"></p>
+      </form>
+
+      <p class="status" id="login-feedback"></p>
+    </section>
+
+    <section class="hidden" id="console">
+      <nav class="tabs">
+        <button class="tab active" type="button" data-panel="homepage">Homepage</button>
+        <button class="tab" type="button" data-panel="grit">Grit</button>
+        <button class="tab" type="button" data-panel="kitchen">Kitchen</button>
+        <button class="tab" type="button" data-panel="smoothies">Smoothies</button>
+        <button class="tab" type="button" data-panel="snacks">Snacks</button>
+        <button class="tab" type="button" data-panel="images">Image Studio</button>
+      </nav>
+
+      <section class="panel active" data-panel-name="homepage"><div class="panel-head"><h2>Homepage content</h2><button class="button button-light" data-refresh type="button">Refresh</button></div><div class="list" id="list-homepage"></div></section>
+      <section class="panel" data-panel-name="grit"><div class="panel-head"><h2>Grit page</h2><button class="button button-light" data-refresh type="button">Refresh</button></div><div class="list" id="list-grit"></div></section>
+      <section class="panel" data-panel-name="kitchen"><div class="panel-head"><h2>Kitchen page</h2><button class="button button-light" data-refresh type="button">Refresh</button></div><div class="list" id="list-kitchen"></div></section>
+      <section class="panel" data-panel-name="smoothies"><div class="panel-head"><h2>Smoothies page</h2><button class="button button-light" data-refresh type="button">Refresh</button></div><div class="list" id="list-smoothies"></div></section>
+      <section class="panel" data-panel-name="snacks"><div class="panel-head"><h2>Snacks page</h2><button class="button button-light" data-refresh type="button">Refresh</button></div><div class="list" id="list-snacks"></div></section>
+
+      <section class="panel" data-panel-name="images">
+        <div class="panel-head"><h2>Image studio</h2><span id="media-count" class="operator-email"></span></div>
+        <form class="media-form" id="media-form">
+          <p class="eyebrow">Upload a replacement image</p>
+          <label>Image file<input name="file" type="file" accept="image/png,image/jpeg,image/webp" required></label>
+          <div class="grid-2">
+            <label>Replaces this filename (optional)<input name="target_filename" placeholder="e.g. t1.jpg"></label>
+            <label>Placement label<input name="placement" placeholder="e.g. Creator — training photo" required></label>
+            <label class="span-2">Alt text<input name="alt_text" required placeholder="Describe the image"></label>
+            <label>Caption (optional)<input name="caption"></label>
+            <label>Sort order<input name="sort_order" type="number" value="0" min="0"></label>
+            <label>Status<select name="published"><option value="true">Publish now</option><option value="false">Save as draft</option></select></label>
+          </div>
+          <button class="button" type="submit">Upload image</button>
+          <p class="status" id="media-feedback"></p>
+        </form>
+        <div class="media-list" id="media-list"></div>
+      </section>
     </section>
   </main>
-</body></html>
+
+  <dialog id="content-editor">
+    <form class="dialog-body" id="content-form">
+      <input type="hidden" name="id">
+      <p class="eyebrow" id="editor-section"></p>
+      <h2 id="editor-title">Edit content</h2>
+      <div class="grid-2">
+        <label class="span-2">Small label (eyebrow)<input name="eyebrow" maxlength="80"></label>
+        <label class="span-2">Title / headline<input name="title" maxlength="160"></label>
+        <label class="span-2">Body copy<textarea name="body" rows="4" maxlength="800"></textarea></label>
+        <label>Button / link label<input name="cta_label" maxlength="60"></label>
+        <label>Button / link URL<input name="cta_url" maxlength="500" placeholder="https:// or mailto:"></label>
+        <label class="span-2">Status<select name="published"><option value="true">Published (live)</option><option value="false">Draft (hidden)</option></select></label>
+      </div>
+      <p class="status" id="content-feedback"></p>
+      <div class="dialog-actions">
+        <button class="button button-light" type="button" id="cancel-edit">Cancel</button>
+        <button class="button" type="submit">Save changes</button>
+      </div>
+    </form>
+  </dialog>
+</body>
+</html>
